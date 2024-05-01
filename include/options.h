@@ -9,7 +9,7 @@ typedef struct {
 } Option;
 
 // Déclaration des fonctions liées à chaque option
-void print_basic_informations(const char *file_to_open);
+void option_d(char *filename);
 void option_s(char *filename);
 void option_a(char *filename);
 void option_e(char *filename);
@@ -17,5 +17,5 @@ void option_t(char *filename);
 void option_l(char *filename);
 void option_c(char *filename);
 void option_h();
-void print_basic_info(char *filename);
+void print_basic_info(const char *file_to_open);
 #endif // OPTIONS_H
