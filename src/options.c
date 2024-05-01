@@ -1,9 +1,17 @@
 #include <stdio.h>
+#include <sys/stat.h>
 #include "../include/options.h"
 
 // Définition des fonctions liées à chaque option
-void option_d(char *filename) {
-    printf("Option -d appelée pour le fichier %s\n", filename);
+void print_basic_informations(const char *file_to_open) {
+    struct stat file_info;
+
+    if (stat(file_to_open, &file_info) != 0) {
+        perror("Erreur lors de la récupération des informations du fichier");
+        exit(EXIT_FAILURE);
+    }
+
+    printf("Taille du fichier : %ld octets\n", file_info.st_size);
 }
 
 void option_s(char *filename) {
