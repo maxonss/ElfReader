@@ -1,3 +1,4 @@
+#include <stdlib.h>
 #include <stdio.h>
 #include <sys/stat.h>
 #include "../include/options.h"
@@ -11,7 +12,7 @@ void print_basic_informations(const char *file_to_open) {
         exit(EXIT_FAILURE);
     }
 
-    printf("Taille du fichier : %ld octets\n", file_info.st_size);
+    printf("Taille du fichier : %lld octets\n", file_info.st_size);
 }
 
 void option_s(char *filename) {
