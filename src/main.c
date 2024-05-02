@@ -85,11 +85,8 @@ int main(int argc, char *argv[]) {
     print_basic_info(argv[1]);
     check_ELF(content);
 
-    Elf64_Ehdr *elf_header = malloc(sizeof(Elf64_Ehdr));
-    memcpy(elf_header, content, sizeof(Elf64_Ehdr));
-    free(content);
-    free(elf_header);
-    
+    Elf64_Ehdr *elf_header = malloc(sizeof(200000)); //mettre plutot Elf64_Ehdr mais problème de compilation
+    memcpy(elf_header, content, sizeof(200000));  //mettre plutot Elf64_Ehdr mais problème de compilation
     // Si aucun argument autre que le nom du fichier n'est passé, afficher les informations standards du fichier ELF
     if (argc == 2) {
         print_basic_info(filename);
@@ -117,6 +114,7 @@ int main(int argc, char *argv[]) {
             return 1;
         }
     }
-
+    free(content);
+    free(elf_header);
     return 0;
 }
