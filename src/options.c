@@ -4,7 +4,7 @@
 #include "../include/options.h"
 #include <fcntl.h>
 #include <elf.h>
-
+#include <gelf.h>
 /**
  * Prints the .text section in hexadecimal
  * This function is called when the user passes the -d argument
@@ -13,7 +13,6 @@
  * @author Merieme Yaaqobi
  */
 void print_text_section_hex(const char *content) {
-    int fd = fopen(content, O_RDONLY);
     Elf *elf;
     Elf_Scn *scn = NULL;
     GElf_Shdr shdr;
@@ -23,7 +22,7 @@ void print_text_section_hex(const char *content) {
         perror("Erreur de version ELF");
         exit(EXIT_FAILURE);
     }
-    elf = elf_begin(fd, ELF_C_READ, NULL);
+    elf = elf_begin(content, ELF_C_READ, NULL);
     if (elf == NULL) {
         perror("elf_begin a échoué");
         exit(EXIT_FAILURE);
@@ -49,7 +48,7 @@ void print_text_section_hex(const char *content) {
         }
     }
     elf_end(elf);
-    fclose(fd);
+    fclose(content);
 }
 
 /**
@@ -60,12 +59,10 @@ void print_text_section_hex(const char *content) {
  * @author Merieme Yaaqobi
  */
 void print_section_count(const char *content) {
-    int fd;
     Elf *elf;
     size_t shnum;
 
-    fd = open(filename, O_RDONLY);
-    if (fd == -1) {
+    if (content == -1) {
         perror("Impossible d'ouvrir le fichier");
         exit(EXIT_FAILURE);
     }
@@ -75,7 +72,7 @@ void print_section_count(const char *content) {
         exit(EXIT_FAILURE);
     }
 
-    elf = elf_begin(fd, ELF_C_READ, NULL);
+    elf = elf_begin(content, ELF_C_READ, NULL);
     if (elf == NULL) {
         perror("elf_begin a échoué");
         exit(EXIT_FAILURE);
@@ -89,7 +86,6 @@ void print_section_count(const char *content) {
     printf("Le fichier contient %zu sections.\n", shnum);
 
     elf_end(elf);
-    close(fd);
 }
 
 /**
