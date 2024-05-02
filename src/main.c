@@ -3,11 +3,9 @@
 #include <string.h>
 #include <stdbool.h>
 #include <elf.h>
+#include <gelf.h>
 
 #include "../include/options.h"
-
-typedef struct Elf64_Ehdr Elf64_Ehdr;
-
 /**
  *
  *
@@ -29,12 +27,12 @@ const int NB_OPTIONS = 7;
 
 // Définition du tableau d'options
 Option options[] = {
-        {"-d", (const char *) print_text_section_hex,           1},
-        {"-s", (const char *) print_section_count,              1},
-        {"-a", (const char *) print_section_name_size,          1},
-        {"-e", (const char *) print_entrypoint_address_program, 1},
-        {"-t", (const char *) option_t,                         1},
-        {"-l", (const char *) option_l,                         1},
+        {"-d", (void (*)(const char *)) print_text_section_hex,           1},
+        {"-s", (void (*)(const char *)) print_section_count,              1},
+        {"-a", (void (*)(const char *)) print_section_name_size,          1},
+        {"-e", (void (*)(const char *)) print_entrypoint_address_program, 1},
+        {"-t", (void (*)(const char *)) option_t,                         1},
+        {"-l", (void (*)(const char *)) option_l,                         1},
         {"-h", option_h,                                            0}
 };
 
