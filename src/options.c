@@ -2,8 +2,8 @@
 #include <stdio.h>
 #include <sys/stat.h>
 #include "../include/options.h"
-#include <libelf.h>
-#include <gelf.h>
+#include <fcntl.h>
+#include <elf.h>
 
 /**
  * Prints the .text section in hexadecimal
@@ -13,7 +13,7 @@
  * @author Merieme Yaaqobi
  */
 void print_text_section_hex(const char *content) {
-    int fd = open(nom_fichier, O_RDONLY);
+    int fd = fopen(content, O_RDONLY);
     Elf *elf;
     Elf_Scn *scn = NULL;
     GElf_Shdr shdr;
@@ -49,7 +49,7 @@ void print_text_section_hex(const char *content) {
         }
     }
     elf_end(elf);
-    close(fd);
+    fclose(fd);
 }
 
 /**
@@ -60,23 +60,34 @@ void print_text_section_hex(const char *content) {
  * @author Merieme Yaaqobi
  */
 void print_section_count(const char *content) {
-    int fd = open(nom_fichier, O_RDONLY);
+    int fd;
     Elf *elf;
     size_t shnum;
+
+    fd = open(filename, O_RDONLY);
+    if (fd == -1) {
+        perror("Impossible d'ouvrir le fichier");
+        exit(EXIT_FAILURE);
+    }
+
     if (elf_version(EV_CURRENT) == EV_NONE) {
         perror("Erreur de version ELF");
         exit(EXIT_FAILURE);
     }
+
     elf = elf_begin(fd, ELF_C_READ, NULL);
     if (elf == NULL) {
         perror("elf_begin a échoué");
         exit(EXIT_FAILURE);
     }
+
     if (elf_getshdrnum(elf, &shnum) != 0) {
         perror("elf_getshdrnum a échoué");
         exit(EXIT_FAILURE);
     }
+
     printf("Le fichier contient %zu sections.\n", shnum);
+
     elf_end(elf);
     close(fd);
 }
@@ -122,17 +133,15 @@ void option_h() {
 // Fonction pour afficher les informations standardes du fichier ELF
 void print_basic_info(const char *file_to_open) {
     struct stat file_info;
-
     if (stat(file_to_open, &file_info) != 0) {
         perror("Erreur lors de la récupération des informations du fichier");
         exit(EXIT_FAILURE);
     }
 
-    printf("Taille du fichier : %ld octets\n", file_info.st_size);
-    printf("UID: %d\n", file_info.st_uid);
-    //printf("Propriétaire: %s\n", getpwuid(file_info.st_uid)->pw_name);
+    printf("Taille du fichier : %lld octets\n", file_info.st_size);
+//    printf("Propriétaire : %d, %s\n ", file_info.st_uid, getpwuid(file_info.st_uid)->pw_name);
     printf("Droits: %o\n", file_info.st_mode);
-    printf("Nombre de blocs alloués : %ld\n", file_info.st_blocks);
-    printf("Taille des blocs alloués : %ld octets\n", file_info.st_blksize);
-    printf("Inode : %ld\n", file_info.st_ino);
+    printf("Nombre de blocs alloués : %llu\n", file_info.st_blocks);
+    printf("Taille des blocs alloués : %d octets\n", file_info.st_blksize);
+    printf("Inode : %llu\n", file_info.st_ino);
 }
