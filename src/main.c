@@ -2,6 +2,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
+#include <elf.h>
+
 #include "../include/options.h"
 
 // Nombre d'options disponibles
@@ -10,19 +12,22 @@ const int NB_OPTIONS = 7;
 
 // Définition du tableau d'options
 Option options[] = {
-        {"-d", print_basic_informations, 1},
+        {"-d", option_d, 1},
         {"-s", option_s, 1},
-        {"-a", option_a, 1},
-        {"-e", option_e, 1},
+        {"-a", print_section_name_size, 1},
+        {"-e", print_entrypoint_address_program, 1},
         {"-t", option_t, 1},
         {"-l", option_l, 1},
         {"-h", option_h, 0}
 };
 
+
+
+
 int main(int argc, char *argv[]) {
     // Vérifier que le nom du fichier ELF a été fourni
     if (argc < 2) {
-        printf("Erreur: veuillez fournir au moins un nom de fichier.\n");
+        printf("Erreur: veuillez fournir un nom de fichier.\n");
         option_h();
         return 1;
     }

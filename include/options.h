@@ -9,13 +9,13 @@ typedef struct {
 } Option;
 
 // Déclaration des fonctions liées à chaque option
-void option_d(char *filename);
-void option_s(char *filename);
-void option_a(char *filename);
-void option_e(char *filename);
-void option_t(char *filename);
-void option_l(char *filename);
-void option_c(char *filename);
+void option_d(const char *content);
+void option_s(const char *content);
+void print_section_name_size(const char *content);
+void print_entrypoint_address_program(const char *content);
+void option_t(const char *content);
+void option_l(const char *content);
+void option_c(const char *content);
 void option_h();
-void print_basic_info(const char *file_to_open);
+void print_basic_info(const char *content);
 #endif // OPTIONS_H
