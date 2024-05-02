@@ -6,14 +6,14 @@
 #include <gelf.h>
 
 /**
- * Prints the .text section in hexadecimal
+ * Prints the .text sectio  n in hexadecimal
  * This function is called when the user passes the -d argument
  *
  * @param content
  * @author Merieme Yaaqobi
  */
 void print_text_section_hex(const char *content) {
-    int fd = open(nom_fichier, O_RDONLY);
+    int fd = open(content, O_RDONLY);
     Elf *elf;
     Elf_Scn *scn = NULL;
     GElf_Shdr shdr;
@@ -60,7 +60,8 @@ void print_text_section_hex(const char *content) {
  * @author Merieme Yaaqobi
  */
 void print_section_count(const char *content) {
-    int fd = open(nom_fichier, O_RDONLY);
+    int fd = open(content, O_RDONLY);
+
     Elf *elf;
     size_t shnum;
     if (elf_version(EV_CURRENT) == EV_NONE) {
@@ -89,7 +90,14 @@ void print_section_count(const char *content) {
  * @author Tristan Salé
  */
 void print_section_name_size(const char *content) {
-    printf("Option -a appelée\n");
+    Elf64_Shdr *section_headers = (Elf64_Shdr *)(content + elf_header.e_shoff);
+    char *section_names = (char *)(content + section_headers[elf_header.e_shstrndx].sh_offset);
+
+    printf("Sections:\n");
+    for (int i = 0; i < elf_header.e_shnum; i++) {
+        printf("Section %d: %s\n", i, section_names + section_headers[i].sh_name);
+    }
+    printf("Il y a %d sections dans ce fichier ELF\n", elf_header.e_shnum);
 }
 
 /**
@@ -99,8 +107,8 @@ void print_section_name_size(const char *content) {
  * @param content
  * @author Tristan Salé
  */
-void print_entrypoint_address_program(const char *content) {
-    printf("Option -e appelée\n");
+void print_entrypoint_address_program(const char *content, Elf64_Ehdr elf_header) {
+    printf("Entrypoint address: 0x%lx\n", elf_header.e_entry);
 }
 
 void option_t(const char *content) {
