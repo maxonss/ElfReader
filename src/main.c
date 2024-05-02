@@ -4,6 +4,7 @@
 #include <stdbool.h>
 #include <elf.h>
 #include <gelf.h>
+#include <libelf.h>
 
 #include "../include/options.h"
 /**

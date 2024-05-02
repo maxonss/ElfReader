@@ -5,6 +5,7 @@
 #include <fcntl.h>
 #include <elf.h>
 #include <gelf.h>
+#include <libelf.h>
 /**
  * Prints the .text section in hexadecimal
  * This function is called when the user passes the -d argument
@@ -22,7 +23,7 @@ void print_text_section_hex(const char *content) {
         perror("Erreur de version ELF");
         exit(EXIT_FAILURE);
     }
-    elf = elf_begin(content, ELF_C_READ, NULL);
+    elf = elf_begin(*content, ELF_C_READ, NULL);
     if (elf == NULL) {
         perror("elf_begin a échoué");
         exit(EXIT_FAILURE);
@@ -48,7 +49,6 @@ void print_text_section_hex(const char *content) {
         }
     }
     elf_end(elf);
-    fclose(content);
 }
 
 /**
@@ -62,7 +62,7 @@ void print_section_count(const char *content) {
     Elf *elf;
     size_t shnum;
 
-    if (content == -1) {
+    if (*content == -1) {
         perror("Impossible d'ouvrir le fichier");
         exit(EXIT_FAILURE);
     }
@@ -72,7 +72,7 @@ void print_section_count(const char *content) {
         exit(EXIT_FAILURE);
     }
 
-    elf = elf_begin(content, ELF_C_READ, NULL);
+    elf = elf_begin(*content, ELF_C_READ, NULL);
     if (elf == NULL) {
         perror("elf_begin a échoué");
         exit(EXIT_FAILURE);
