@@ -3,9 +3,9 @@
 
 // Définition de la structure pour stocker les informations sur chaque option
 typedef struct {
-    const char *name;          // Utilisation de const char * pour les chaînes constantes
-    void (*function)(char *);  // Type de fonction ajusté
-    int required_arg;          // Indique si l'option requiert un argument (1 = oui, 0 = non)
+    const char *name;                 // Utilisation de const char * pour les chaînes constantes
+    void (*function)(const char *);   // Type de fonction ajusté
+    int required_arg;                 // L'option requiert un argument [0, 1]
 } Option;
 
 // Déclaration des fonctions liées à chaque option
@@ -18,4 +18,5 @@ void option_l(const char *content);
 void option_c(const char *content);
 void option_h();
 void print_basic_info(const char *content);
+
 #endif // OPTIONS_H
