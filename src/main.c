@@ -12,8 +12,8 @@ const int NB_OPTIONS = 7;
 
 // Définition du tableau d'options
 Option options[] = {
-        {"-d", option_d, 1},
-        {"-s", option_s, 1},
+        {"-d", print_text_section_hex, 1},
+        {"-s", print_section_count, 1},
         {"-a", print_section_name_size, 1},
         {"-e", print_entrypoint_address_program, 1},
         {"-t", option_t, 1},

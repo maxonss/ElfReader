@@ -2,27 +2,83 @@
 #include <stdio.h>
 #include <sys/stat.h>
 #include "../include/options.h"
-
-// Définition des fonctions liées à chaque option
-
-// Tristan:
-// -a : This option will print the list of section including their name and size
-//  -e : This option will print the entrypoint address of the program
-// Merieme:
-// -d : This option will print in hexadecimal format the .text section of the binary
-// -s : This option will print the number of section in the binary
+#include <libelf.h>
+#include <gelf.h>
 
 /**
- *
+ * Prints the .text section in hexadecimal
+ * This function is called when the user passes the -d argument
  *
  * @param content
+ * @author Merieme Yaaqobi
  */
-void option_d(const char *content) {
-    printf("Option -d appelée\n");
+void print_text_section_hex(const char *content) {
+    int fd = open(nom_fichier, O_RDONLY);
+    Elf *elf;
+    Elf_Scn *scn = NULL;
+    GElf_Shdr shdr;
+    Elf_Data *data;
+    size_t n, shstrndx;
+    if (elf_version(EV_CURRENT) == EV_NONE) {
+        perror("Erreur de version ELF");
+        exit(EXIT_FAILURE);
+    }
+    elf = elf_begin(fd, ELF_C_READ, NULL);
+    if (elf == NULL) {
+        perror("elf_begin a échoué");
+        exit(EXIT_FAILURE);
+    }
+    if (elf_getshdrstrndx(elf, &shstrndx) != 0) {
+        perror("elf_getshdrstrndx a échoué");
+        exit(EXIT_FAILURE);
+    }
+    while ((scn = elf_nextscn(elf, scn)) != NULL) {
+        if (gelf_getshdr(scn, &shdr) != &shdr) {
+            perror("gelf_getshdr a échoué");
+            exit(EXIT_FAILURE);
+        }
+        if (shdr.sh_type == SHT_PROGBITS) {
+            data = elf_getdata(scn, NULL);
+            for (n = 0; n < data->d_size; ++n) {
+                printf("%02x ", ((unsigned char*)data->d_buf)[n]);
+                if ((n + 1) % 16 == 0)
+                    putchar('\n');
+            }
+            putchar('\n');
+            break;
+        }
+    }
+    elf_end(elf);
+    close(fd);
 }
 
-void option_s(const char *content) {
-    printf("Option -s appelée\n");
+/**
+ * Prints sections count.
+ * This function is called when the user passes the -s argument.
+ *
+ * @param content
+ * @author Merieme Yaaqobi
+ */
+void print_section_count(const char *content) {
+    int fd = open(nom_fichier, O_RDONLY);
+    Elf *elf;
+    size_t shnum;
+    if (elf_version(EV_CURRENT) == EV_NONE) {
+        perror("Erreur de version ELF");
+        exit(EXIT_FAILURE);
+    }
+    elf = elf_begin(fd, ELF_C_READ, NULL);
+    if (elf == NULL) {
+        perror("elf_begin a échoué");
+        exit(EXIT_FAILURE);
+    }
+    if (elf_getshdrnum(elf, &shnum) != 0) {
+        perror("elf_getshdrnum a échoué");
+        exit(EXIT_FAILURE);
+    }
+    printf("Le fichier contient %zu sections.\n", shnum);
+    elf_end(elf);
+    close(fd);
 }
 
 /**

@@ -9,8 +9,8 @@ typedef struct {
 } Option;
 
 // Déclaration des fonctions liées à chaque option
-void option_d(const char *content);
-void option_s(const char *content);
+void print_text_section_hex(const char *content);
+void print_section_count(const char *content);
 void print_section_name_size(const char *content);
 void print_entrypoint_address_program(const char *content);
 void option_t(const char *content);
